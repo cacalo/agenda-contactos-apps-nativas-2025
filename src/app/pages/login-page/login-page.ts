@@ -9,4 +9,7 @@ import { RouterModule } from '@angular/router';
 })
 export class LoginPage {
 
+  login(loginForm:any){
+    console.log(loginForm)
+  }
 }
