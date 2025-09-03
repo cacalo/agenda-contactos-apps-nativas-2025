@@ -8,5 +8,8 @@ export interface Contact {
   image: string,
   number: string,
   company: string
-  isFavourite?: boolean //Es opcional (?) //BORRARLO
+  isFavorite: boolean
 }
+
+/** Interfaz que es igual a Contact pero sin ID */
+export type NewContact = Omit<Contact,"id">;
