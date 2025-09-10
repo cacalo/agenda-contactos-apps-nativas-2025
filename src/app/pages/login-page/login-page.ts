@@ -15,12 +15,12 @@ export class LoginPage {
   authService = inject(AuthService);
 
   login(form:any){
-    console.log(form)
+    console.log(form.value)
     this.errorLogin = false;
     if(!form.value.email || !form.value.password){
       this.errorLogin = true;
       return
     }
-    this.authService.login(form.value)
+    this.authService.login(form.value);
   }
 }
