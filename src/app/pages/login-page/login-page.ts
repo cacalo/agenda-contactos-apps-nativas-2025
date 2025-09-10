@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-login-page',
@@ -11,13 +12,15 @@ import { RouterModule } from '@angular/router';
 export class LoginPage {
 
   errorLogin = false;
+  authService = inject(AuthService);
 
   login(form:any){
     console.log(form)
     this.errorLogin = false;
-    if(!form.email || !form.password){
+    if(!form.value.email || !form.value.password){
       this.errorLogin = true;
       return
     }
+    this.authService.login(form.value)
   }
 }
