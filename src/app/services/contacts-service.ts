@@ -55,12 +55,60 @@ export class ContactsService {
     return resContact;
   }
 
-  editContact() { }
-
-  /** Borra un contacto */
-  deleteContact(id:string) {
-    this.contacts = this.contacts.filter(contact => contact.id !== id)
+  /** Edita un contacto */
+  async editContact(contactoEditado:Contact) {
+    const res = await fetch(this.URL_BASE+"/"+contactoEditado.id, 
+      {
+        method:"PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer "+this.authService.token,
+        },
+        body: JSON.stringify(contactoEditado)
+      });
+    if(!res.ok) return;
+    const resContact:Contact = await res.json();
+    /** Edita la lista actual de contactos reemplazando sólamente el que editamos */
+    this.contacts = this.contacts.map(contact => {
+      if(contact.id === resContact.id) {
+        return resContact;
+      };
+      return contact;
+    });
+    return resContact;
   }
 
-  setFavourite() { }
+  /** Borra un contacto */
+  async deleteContact(id:string | number) {
+    const res = await fetch(this.URL_BASE+"/"+id, 
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer "+this.authService.token,
+        },
+      });
+    if(!res.ok) return;
+    this.contacts = this.contacts.filter(contact => contact.id !== id);
+    return true;
+  }
+
+  /** Marca/desmarca un contacto como favorito */
+  async setFavourite(id:string | number ) {
+    const res = await fetch(this.URL_BASE+"/"+id+"favorite", 
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer "+this.authService.token,
+        },
+      });
+    if(!res.ok) return;
+    /** Edita la lista actual de contactos reemplazando sólamente el favorito del que editamos */
+    this.contacts = this.contacts.map(contact => {
+      if(contact.id === id) {
+        return {...contact, isFavorite: !contact.isFavorite};
+      };
+      return contact;
+    });
+    return true;
+  }
 }
