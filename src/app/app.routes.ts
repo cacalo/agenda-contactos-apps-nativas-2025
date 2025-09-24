@@ -37,6 +37,10 @@ export const routes: Routes = [
         component: ContactDetailsPage
       },
       {
+        path: "contacts/:idContacto/edit",
+        component: NewEditContact
+      },
+      {
         path: "groups",
         component: GroupsPage
       },
