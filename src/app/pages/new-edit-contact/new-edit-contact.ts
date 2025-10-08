@@ -3,20 +3,22 @@ import { Form, FormGroup, FormsModule, NgControl, NgForm, NgModel } from '@angul
 import { Contact, NewContact } from '../../interfaces/contact';
 import { ContactsService } from '../../services/contacts-service';
 import { Router } from '@angular/router';
+import { Spinner } from '../../components/spinner/spinner';
 
 @Component({
   selector: 'app-new-edit-contact',
-  imports: [FormsModule],
+  imports: [FormsModule,Spinner],
   templateUrl: './new-edit-contact.html',
   styleUrl: './new-edit-contact.scss'
 })
 export class NewEditContact implements OnInit {
    contactsService = inject(ContactsService);
    router = inject(Router)
-  errorEnBack = false;
+    errorEnBack = false;
    idContacto = input<number>();
-  contactoOriginal:Contact|undefined = undefined;
+    contactoOriginal:Contact|undefined = undefined;
    form = viewChild<NgForm>('newContactForm');
+   isLoading = false;
   
   async ngOnInit() {
     if(this.idContacto()){
@@ -37,7 +39,6 @@ export class NewEditContact implements OnInit {
 
   /** Revisa si estamos editando o creando un contacto y ejecuta la función correspondiente del servicio de contactos */
   async handleFormSubmission(form:NgForm){
-
     this.errorEnBack = false;
     const nuevoContacto: NewContact ={
       firstName: form.value.firstName,
@@ -51,12 +52,13 @@ export class NewEditContact implements OnInit {
     }
     let res;
     // const res = await this.contactsService.createContact(nuevoContacto);
+    this.isLoading = true;
     if(this.idContacto()){
       res = await this.contactsService.editContact({...nuevoContacto,id:this.idContacto()!})
     } else {
       res = await this.contactsService.createContact(nuevoContacto);
     }
-
+    this.isLoading = false;
     if(!res) {
       this.errorEnBack = true;
       return
